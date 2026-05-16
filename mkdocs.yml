@@ -1,0 +1,62 @@
+site_name: Documentación de sis-ms
+site_description: Microservicio FastAPI para consultar afiliados al SIS del Perú.
+repo_name: sis-ms
+site_url: https://hospitalhuaycan.github.io/sis-ms/
+
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      primary: blue grey
+      scheme: light
+      toggle:
+        icon: material/brightness-7
+        name: Cambiar a modo oscuro
+    - media: "(prefers-color-scheme: dark)"
+      primary: blue grey
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Cambiar a modo claro
+  features:
+    - content.code.copy
+    - navigation.expand
+    - navigation.indexes
+    - navigation.top
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - pymdownx.blocks.caption
+  - pymdownx.highlight:
+      linenums: true
+  - pymdownx.keys
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid
+nav:
+  - Introducción: index.md
+  - Guía rápida: getting-started/index.md
+  - Referencia de la API:
+      - Descripción general: reference/index.md
+      - Autenticación: reference/autenticacion.md
+      - Consulta de afiliados: reference/consultas.md
+  - Arquitectura: architecture/index.md
+  - Operaciones: operations/index.md
+
+extra:
+  generator: false
+plugins:
+  - search
+  - mermaid2
+copyright: "Copyright &copy; 2024 - Proyecto SIS-MS"
