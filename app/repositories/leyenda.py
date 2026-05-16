@@ -7,7 +7,7 @@ class LeyendaRepository:
     """Repositorio para el modelo Leyenda."""
 
     def __init__(self, session: Session) -> None:
-        """."""
+        """Inicio."""
         self.session = session
 
     def get_all(self) -> list[Leyenda]:
