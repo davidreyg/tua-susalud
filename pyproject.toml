@@ -45,11 +45,10 @@ tag_format = "$version"
 version_scheme = "pep440"
 version_provider = "uv"
 update_changelog_on_bump = true
+template = "CHANGELOG.md.jinja"
 
-[tool.commitizen.customize]
-change_type_map = { "feat" = "🚀 Nuevas funcionalidades", "fix" = "🐛 Correcciones de errores", "refactor" = "♻️ Refactorización", "perf" = "⚡ Mejoras de rendimiento", "docs" = "📝 Documentación", "style" = "🎨 Estilo", "test" = "✅ Pruebas", "build" = "🏗️ Construcción", "ci" = "👷 Integración continua", "chore" = "🔧 Tareas varias" }
+[tool.commitizen.changelog]
 change_type_order = ["BREAKING CHANGE", "feat", "fix", "refactor", "perf", "docs", "style", "test", "build", "ci", "chore"]
-
 
 [build-system]
 requires = ["hatchling"]

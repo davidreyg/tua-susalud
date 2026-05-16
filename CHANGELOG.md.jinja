@@ -1,4 +1,17 @@
-﻿{% if not incremental -%}
+﻿{% set type_labels = {
+    "feat": "🚀 Nuevas funcionalidades",
+    "fix": "🐛 Correcciones de errores",
+    "refactor": "♻️ Refactorización",
+    "perf": "⚡ Mejoras de rendimiento",
+    "docs": "📝 Documentación",
+    "style": "🎨 Estilo",
+    "test": "✅ Pruebas",
+    "build": "🏗️ Construcción",
+    "ci": "👷 Integración continua",
+    "chore": "🔧 Tareas varias",
+    "breaking change": "💥 Breaking Changes",
+} %}
+{% if not incremental -%}
 # CHANGELOG{% endif %}
 {% for entry in tree %}
 {% if entry.version %}
@@ -13,15 +26,15 @@
 
 {% endif %}
 {% for change_type, changes in entry.changes.items() %}
-{% set type_label = change_type_map.get(change_type, change_type | capitalize) %}
-{% if change_type == "BREAKING CHANGE" %}
+{% set type_label = type_labels.get(change_type.lower(), change_type | capitalize) %}
+{% if change_type.lower() == "breaking change" %}
 ### 💥 Breaking Changes
 
 {% for change in changes %}
 {% if change.scope %}
-- **{{ change.scope }}:** {{ change.message }} ({{ change.sha1[:7] }})
+- **{{ change.scope }}:** {{ change.message }} (`{{ change.sha1[:7] }}`)
 {% else %}
-- {{ change.message }} ({{ change.sha1[:7] }})
+- {{ change.message }} (`{{ change.sha1[:7] }}`)
 {% endif %}
 {% endfor %}
 {% else %}
@@ -30,20 +43,20 @@
 {% set scopes = changes | selectattr("scope") | map(attribute="scope") | unique | list %}
 {% if scopes %}
 {% for scope in scopes %}
-**{{ scope }}**
+**`{{ scope }}`**
 {% for change in changes if change.scope == scope %}
-- {{ change.message }} ({{ change.sha1[:7] }})
+- {{ change.message }} (`{{ change.sha1[:7] }}`)
 {% endfor %}
 {% endfor %}
 {% set unscope = changes | rejectattr("scope") | list %}
 {% if unscope %}
 {% for change in unscope %}
-- {{ change.message }} ({{ change.sha1[:7] }})
+- {{ change.message }} (`{{ change.sha1[:7] }}`)
 {% endfor %}
 {% endif %}
 {% else %}
 {% for change in changes %}
-- {{ change.message }} ({{ change.sha1[:7] }})
+- {{ change.message }} (`{{ change.sha1[:7] }}`)
 {% endfor %}
 {% endif %}
 {% endif %}
