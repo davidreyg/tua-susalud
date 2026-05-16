@@ -1,3 +1,9 @@
+﻿
+## [0.4.0] - 2026-05-16
+### 🚀 Nuevas funcionalidades
+
+- :sparkles: Update changelog template and enhance change type mapping in pyproject.toml (`bd63ee0`)
+
 ## 0.3.0 (2026-05-16)
 
 ### Feat
