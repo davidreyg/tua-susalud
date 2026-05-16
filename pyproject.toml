@@ -46,6 +46,7 @@ version_scheme = "pep440"
 version_provider = "uv"
 update_changelog_on_bump = true
 template = "CHANGELOG.md.jinja"
+extras = { repo_url="https://github.com/davidreyg/tua-susalud" }
 
 [tool.commitizen.changelog]
 change_type_order = ["BREAKING CHANGE", "feat", "fix", "refactor", "perf", "docs", "style", "test", "build", "ci", "chore"]

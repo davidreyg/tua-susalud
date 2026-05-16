@@ -11,6 +11,13 @@
     "chore": "🔧 Tareas varias",
     "breaking change": "💥 Breaking Changes",
 } %}
+{% macro commit_link(sha) %}
+{%- if repo_url is defined and repo_url -%}
+[`{{ sha[:7] }}`]({{ repo_url }}/commit/{{ sha }})
+{%- else -%}
+`{{ sha[:7] }}`
+{%- endif -%}
+{% endmacro %}
 {% if not incremental -%}
 # CHANGELOG{% endif %}
 {% for entry in tree %}
@@ -32,9 +39,9 @@
 
 {% for change in changes %}
 {% if change.scope %}
-- **{{ change.scope }}:** {{ change.message }} (`{{ change.sha1[:7] }}`)
+- **{{ change.scope }}:** {{ change.message }} ({{ commit_link(change.sha1) }})
 {% else %}
-- {{ change.message }} (`{{ change.sha1[:7] }}`)
+- {{ change.message }} ({{ commit_link(change.sha1) }})
 {% endif %}
 {% endfor %}
 {% else %}
@@ -45,18 +52,18 @@
 {% for scope in scopes %}
 **`{{ scope }}`**
 {% for change in changes if change.scope == scope %}
-- {{ change.message }} (`{{ change.sha1[:7] }}`)
+- {{ change.message }} ({{ commit_link(change.sha1) }})
 {% endfor %}
 {% endfor %}
 {% set unscope = changes | rejectattr("scope") | list %}
 {% if unscope %}
 {% for change in unscope %}
-- {{ change.message }} (`{{ change.sha1[:7] }}`)
+- {{ change.message }} ({{ commit_link(change.sha1) }})
 {% endfor %}
 {% endif %}
 {% else %}
 {% for change in changes %}
-- {{ change.message }} (`{{ change.sha1[:7] }}`)
+- {{ change.message }} ({{ commit_link(change.sha1) }})
 {% endfor %}
 {% endif %}
 {% endif %}
