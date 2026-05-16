@@ -1,3 +1,9 @@
+## 0.3.0 (2026-05-16)
+
+### Feat
+
+- :sparkles: Add changelog template and change type order to .cz_changelog.md.j2
+
 ## 0.2.1 (2026-05-16)
 
 ### Fix
