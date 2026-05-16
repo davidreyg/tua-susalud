@@ -1,4 +1,4 @@
-﻿import os
+import os
 import urllib.parse
 from collections.abc import Generator
 from contextlib import contextmanager
@@ -29,7 +29,6 @@ class DatabaseConfig:
         self,
     ) -> None:
         """Inicializar la configuración de conexión a PostgreSQL."""
-
         # Configuración de conexión
         self.host = os.getenv("DB_HOST", os.getenv("DB_SERVER", "localhost"))
         self.port = os.getenv("DB_PORT", "5432")

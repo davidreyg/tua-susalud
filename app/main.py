@@ -1,4 +1,4 @@
-﻿from collections.abc import AsyncGenerator
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from api_exception import (

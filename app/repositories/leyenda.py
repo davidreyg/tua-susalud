@@ -1,4 +1,4 @@
-﻿from sqlmodel import Session, select
+from sqlmodel import Session, select
 
 from app.models.leyenda import Leyenda
 
@@ -7,6 +7,7 @@ class LeyendaRepository:
     """Repositorio para el modelo Leyenda."""
 
     def __init__(self, session: Session) -> None:
+        """."""
         self.session = session
 
     def get_all(self) -> list[Leyenda]:

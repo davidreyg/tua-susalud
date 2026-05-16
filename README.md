@@ -79,4 +79,3 @@ docker run --rm -p 8000:8000 --env-file .env.local tua-susalud
 ## Licencia
 
 Este proyecto se distribuye bajo los términos de la licencia [MIT](LICENSE).
-

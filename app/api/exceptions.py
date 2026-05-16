@@ -1,4 +1,4 @@
-﻿from api_exception import BaseExceptionCode
+from api_exception import BaseExceptionCode
 
 
 class CustomExceptionCode(BaseExceptionCode):

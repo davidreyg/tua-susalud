@@ -1,7 +1,7 @@
 """create leyenda table
 
 Revision ID: cba1b5eedb67
-Revises: 
+Revises:
 Create Date: 2026-05-16 12:27:43.272542
 
 """
