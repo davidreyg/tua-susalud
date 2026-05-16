@@ -1,4 +1,10 @@
 ﻿
+﻿
+## [0.5.0] - 2026-05-16
+### 🚀 Nuevas funcionalidades
+
+- :sparkles: Enhance changelog template with commit link macro and update pyproject.toml with repo URL ([`d09518e`](https://github.com/davidreyg/tua-susalud/commit/d09518e6850f219e591070aaec7d728eb57ebf6f))
+
 ## [0.4.0] - 2026-05-16
 ### 🚀 Nuevas funcionalidades
 
