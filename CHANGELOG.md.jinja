@@ -1,0 +1,51 @@
+﻿{% if not incremental -%}
+# CHANGELOG{% endif %}
+{% for entry in tree %}
+{% if entry.version %}
+
+## [{{ entry.version }}]{% if entry.date %} - {{ entry.date }}{% endif %}
+
+{% endif %}
+{% if entry.breaking_changes %}
+
+> [!CAUTION]
+> Se incluyen cambios rompientes.
+
+{% endif %}
+{% for change_type, changes in entry.changes.items() %}
+{% set type_label = change_type_map.get(change_type, change_type | capitalize) %}
+{% if change_type == "BREAKING CHANGE" %}
+### 💥 Breaking Changes
+
+{% for change in changes %}
+{% if change.scope %}
+- **{{ change.scope }}:** {{ change.message }} ({{ change.sha1[:7] }})
+{% else %}
+- {{ change.message }} ({{ change.sha1[:7] }})
+{% endif %}
+{% endfor %}
+{% else %}
+### {{ type_label }}
+
+{% set scopes = changes | selectattr("scope") | map(attribute="scope") | unique | list %}
+{% if scopes %}
+{% for scope in scopes %}
+**{{ scope }}**
+{% for change in changes if change.scope == scope %}
+- {{ change.message }} ({{ change.sha1[:7] }})
+{% endfor %}
+{% endfor %}
+{% set unscope = changes | rejectattr("scope") | list %}
+{% if unscope %}
+{% for change in unscope %}
+- {{ change.message }} ({{ change.sha1[:7] }})
+{% endfor %}
+{% endif %}
+{% else %}
+{% for change in changes %}
+- {{ change.message }} ({{ change.sha1[:7] }})
+{% endfor %}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endfor %}
