@@ -2,9 +2,11 @@
 
 from typing import Annotated
 
-from fastapi import APIRouter, File, HTTPException, UploadFile
+from api_exception import APIException, APIResponse
+from fastapi import APIRouter, File, UploadFile
 from fastapi.responses import StreamingResponse
 
+from app.api.exceptions import CustomExceptionCode
 from app.services.turno_service import TurnoService
 
 router = APIRouter(prefix="/api/turno", tags=["Turno"])
@@ -14,6 +16,7 @@ router = APIRouter(prefix="/api/turno", tags=["Turno"])
     "/procesar",
     summary="Procesar archivo Excel de roles de turno",
     response_class=StreamingResponse,
+    responses=APIResponse.default(),  # type: ignore
 )
 async def procesar_archivo(
     archivo: Annotated[
@@ -34,28 +37,27 @@ async def procesar_archivo(
         Respuesta binaria con el archivo Excel procesado.
 
     Raises:
-        HTTPException 400: Si el archivo no es un .xlsx valido o el
-            procesamiento falla.
+        APIException: Si el archivo no es valido o el procesamiento falla.
 
     """
     if not archivo.filename or not archivo.filename.lower().endswith(".xlsx"):
-        raise HTTPException(
-            status_code=400,
-            detail="El archivo debe tener extension .xlsx",
+        raise APIException(
+            error_code=CustomExceptionCode.FILE_INVALID_EXTENSION,
+            http_status_code=400,
         )
 
     try:
         input_bytes = await archivo.read()
     except Exception as exc:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Error al leer el archivo: {exc}",
+        raise APIException(
+            error_code=CustomExceptionCode.FILE_READ_ERROR,
+            http_status_code=400,
         ) from exc
 
     if not input_bytes:
-        raise HTTPException(
-            status_code=400,
-            detail="El archivo esta vacio",
+        raise APIException(
+            error_code=CustomExceptionCode.FILE_EMPTY,
+            http_status_code=400,
         )
 
     try:
@@ -64,9 +66,9 @@ async def procesar_archivo(
             nombre_original=archivo.filename,
         )
     except ValueError as exc:
-        raise HTTPException(
-            status_code=400,
-            detail=str(exc),
+        raise APIException(
+            error_code=CustomExceptionCode.FILE_PROCESSING_ERROR,
+            http_status_code=422,
         ) from exc
 
     nombre_descarga = archivo.filename.rsplit(".", 1)[0] + "_procesado.xlsx"

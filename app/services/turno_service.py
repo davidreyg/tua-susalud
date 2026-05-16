@@ -45,49 +45,56 @@ class TurnoService:
                 o no se encuentra la estructura esperada.
 
         """
-        excel_file = pd.ExcelFile(BytesIO(input_bytes))
+        try:
+            excel_file = pd.ExcelFile(BytesIO(input_bytes))
+        except ValueError as exc:
+            msg = f"No se pudo leer el archivo '{nombre_original}': {exc}"
+            raise ValueError(msg) from exc
+
         nombres_hojas = excel_file.sheet_names
 
         if not nombres_hojas:
             msg = f"El archivo '{nombre_original}' no contiene hojas."
             raise ValueError(msg)
 
-        output_buffer = BytesIO()
         min_columnas_validas = 2
         max_caracteres_pestana = 31
-        alguna_procesada = False
+        resultados: list[tuple[pd.DataFrame, str]] = []
 
+        for hoja in nombres_hojas:
+            df_raw = pd.read_excel(excel_file, sheet_name=hoja, header=None)
+
+            if df_raw.empty or len(df_raw.columns) < min_columnas_validas:
+                continue
+
+            cabecera_info = TurnoService._localizar_cabecera(df_raw)
+            if cabecera_info is None:
+                continue
+
+            fila_4, fila_5, idx_data = cabecera_info
+            cabecera = TurnoService._fusionar_cabeceras(fila_4, fila_5)
+
+            df_datos = df_raw.iloc[idx_data:].copy()
+            df_procesado = TurnoService._extraer_datos(df_datos, cabecera)
+
+            if df_procesado is None or df_procesado.empty:
+                continue
+
+            nombre_pestana = (
+                hoja[:max_caracteres_pestana]
+                if isinstance(hoja, str)
+                else str(hoja)[:max_caracteres_pestana]
+            )
+            resultados.append((df_procesado, nombre_pestana))
+
+        if not resultados:
+            msg = f"El archivo '{nombre_original}' no contiene datos validos."
+            raise ValueError(msg)
+
+        output_buffer = BytesIO()
         with pd.ExcelWriter(output_buffer, engine="openpyxl") as writer:  # type: ignore[arg-type]
-            for hoja in nombres_hojas:
-                df_raw = pd.read_excel(excel_file, sheet_name=hoja, header=None)
-
-                if df_raw.empty or len(df_raw.columns) < min_columnas_validas:
-                    continue
-
-                cabecera_info = TurnoService._localizar_cabecera(df_raw)
-                if cabecera_info is None:
-                    continue
-
-                fila_4, fila_5, idx_data = cabecera_info
-                cabecera = TurnoService._fusionar_cabeceras(fila_4, fila_5)
-
-                df_datos = df_raw.iloc[idx_data:].copy()
-                df_procesado = TurnoService._extraer_datos(df_datos, cabecera)
-
-                if df_procesado is None or df_procesado.empty:
-                    continue
-
-                alguna_procesada = True
-                nombre_pestana = (
-                    hoja[:max_caracteres_pestana]
-                    if isinstance(hoja, str)
-                    else str(hoja)[:max_caracteres_pestana]
-                )
+            for df_procesado, nombre_pestana in resultados:
                 df_procesado.to_excel(writer, index=False, sheet_name=nombre_pestana)
-
-            if not alguna_procesada:
-                msg = f"El archivo '{nombre_original}' no contiene datos validos."
-                raise ValueError(msg)
 
         output_buffer.seek(0)
         return output_buffer.getvalue()
