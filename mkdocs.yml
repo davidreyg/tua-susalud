@@ -1,7 +1,6 @@
-site_name: Documentación de sis-ms
-site_description: Microservicio FastAPI para consultar afiliados al SIS del Perú.
-repo_name: sis-ms
-site_url: https://hospitalhuaycan.github.io/sis-ms/
+﻿site_name: Documentación de tua-susalud
+site_description: API FastAPI para gestionar roles de turno y generar reportes SUSALUD.
+repo_name: tua-susalud
 
 theme:
   name: material
@@ -49,8 +48,8 @@ nav:
   - Guía rápida: getting-started/index.md
   - Referencia de la API:
       - Descripción general: reference/index.md
-      - Autenticación: reference/autenticacion.md
-      - Consulta de afiliados: reference/consultas.md
+      - Subir y procesar turnos: reference/turnos.md
+      - Generar reporte SUSALUD: reference/reporte.md
   - Arquitectura: architecture/index.md
   - Operaciones: operations/index.md
 
@@ -59,4 +58,4 @@ extra:
 plugins:
   - search
   - mermaid2
-copyright: "Copyright &copy; 2024 - Proyecto SIS-MS"
+copyright: "Copyright &copy; 2024 - Proyecto TUA SUSALUD"

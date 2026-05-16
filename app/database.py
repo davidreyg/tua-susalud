@@ -1,4 +1,4 @@
-import os
+﻿import os
 import urllib.parse
 from collections.abc import Generator
 from contextlib import contextmanager
@@ -28,26 +28,12 @@ class DatabaseConfig:
     def __init__(
         self,
     ) -> None:
-        """Inicializar la configuración de conexión a PostgreSQL.
+        """Inicializar la configuración de conexión a PostgreSQL."""
 
-        Args:
-            host: Servidor de base de datos
-            port: Puerto de conexión
-            database: Nombre de la base de datos
-            username: Usuario de base de datos
-            password: Contraseña de base de datos
-            echo: Si mostrar las consultas SQL en logs
-            pool_size: Tamaño del pool de conexiones
-            max_overflow: Conexiones adicionales máximas
-            pool_timeout: Tiempo de espera para obtener conexión
-            pool_recycle: Tiempo para reciclar conexiones (segundos)
-            pool_pre_ping: Verificar conexiones antes de usarlas
-
-        """
         # Configuración de conexión
         self.host = os.getenv("DB_HOST", os.getenv("DB_SERVER", "localhost"))
         self.port = os.getenv("DB_PORT", "5432")
-        self.database = os.getenv("DB_NAME", "sis_database")
+        self.database = os.getenv("DB_NAME", "tua_susalud_db")
         self.username = os.getenv("DB_USER", "postgres")
         self.password = os.getenv("DB_PASSWORD", "")
 
@@ -120,7 +106,7 @@ class DatabaseConfig:
                 # Configuraciones adicionales para PostgreSQL
                 connect_args={
                     "connect_timeout": 30,
-                    "application_name": "SIS_Application",
+                    "application_name": "TuaSusaludApp",
                 },
             )
 
@@ -166,15 +152,7 @@ class DatabaseConfig:
                 session.close()
 
     def test_connection(self) -> bool:
-        """Probar la conexión a la base de datos.
-
-        Args:
-            timeout: Tiempo límite para la prueba de conexión
-
-        Returns:
-            bool: True si la conexión es exitosa, False en caso contrario
-
-        """
+        """Probar la conexión a la base de datos."""
         try:
             with self.get_session_context() as session:
                 # Query para obtener la versión de PostgreSQL
@@ -193,12 +171,7 @@ class DatabaseConfig:
             return False
 
     def health_check(self) -> dict:
-        """Realizar un chequeo de salud de la base de datos.
-
-        Returns:
-            dict: Estado de salud de la base de datos
-
-        """
+        """Realizar un chequeo de salud de la base de datos."""
         try:
             with self.get_session_context() as session:
                 # Verificar conexión básica
@@ -209,7 +182,7 @@ class DatabaseConfig:
                     "database": self.database,
                     "host": self.host,
                     "port": self.port,
-                    "timestamp": None,  # Se podría agregar timestamp si es necesario
+                    "timestamp": None,
                 }
 
         except Exception as e:
@@ -243,12 +216,7 @@ class DatabaseConfig:
 # Singleton pattern para configuración global
 @lru_cache(maxsize=1)
 def get_database_config() -> DatabaseConfig:
-    """Obtener instancia singleton de configuración de base de datos.
-
-    Returns:
-        DatabaseConfig: Instancia de configuración
-
-    """
+    """Obtener instancia singleton de configuración de base de datos."""
     return DatabaseConfig()
 
 
@@ -257,34 +225,19 @@ db_config = get_database_config()
 
 
 def get_session() -> Generator[Session]:
-    """Dependencia para FastAPI - Obtener sesión de base de datos.
-
-    Yields:
-        Session: Sesión de SQLModel
-
-    """
+    """Dependencia para FastAPI - Obtener sesión de base de datos."""
     with db_config.get_session_context() as session:
         yield session
 
 
 def get_engine() -> Engine:
-    """Obtener el motor de base de datos.
-
-    Returns:
-        Engine: Motor de SQLAlchemy
-
-    """
+    """Obtener el motor de base de datos."""
     return db_config.engine
 
 
 # Funciones de utilidad adicionales
 async def init_database() -> bool:
-    """Inicializar y verificar la conexión a la base de datos.
-
-    Returns:
-        bool: True si la inicialización es exitosa
-
-    """
+    """Inicializar y verificar la conexión a la base de datos."""
     try:
         config = get_database_config()
         if config.test_connection():

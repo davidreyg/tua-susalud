@@ -1,4 +1,4 @@
-from collections.abc import AsyncGenerator
+﻿from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from api_exception import (
@@ -20,7 +20,7 @@ logger = Logger(__name__)
 async def lifespan(app: FastAPI) -> AsyncGenerator[None]:  # noqa: ARG001
     """Contexto de vida de la aplicación."""
     # Startup
-    logger.info("🚀 Iniciando aplicación SIS-MS...")
+    logger.info("🚀 Iniciando aplicación TUA SUSALUD...")
 
     # Probar conexión a la base de datos PostgreSQL
     if db_config.test_connection():
@@ -32,13 +32,13 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:  # noqa: ARG001
     db_config.close()
 
     # Shutdown
-    logger.info("🛑 Cerrando aplicación SIS-MS...")
+    logger.info("🛑 Cerrando aplicación TUA SUSALUD...")
 
 
 # Crear la aplicación FastAPI
 app = FastAPI(
-    title="SIS API",
-    description="API para gestionar el Sistema Integral de Salud (SIS)",
+    title="TUA SUSALUD API",
+    description="API para gestionar roles de turno y generar reportes SUSALUD",
     version="1.0.0",
     lifespan=lifespan,
 )
@@ -61,13 +61,12 @@ app.add_middleware(
 async def read_root() -> dict:
     """Endpoint raíz de la API."""
     return {
-        "message": "API de SIS - Sistema Integral de Salud",
+        "message": "API de TUA SUSALUD - Gestión de Roles de Turno",
         "version": "1.0.0",
         "database": "PostgreSQL",
         "endpoints": [
             "/docs - Documentación Swagger",
             "/redoc - Documentación ReDoc",
-            "/sis - Endpoints principales del SIS",
             # Agregar aquí tus endpoints específicos
         ],
     }
@@ -81,5 +80,5 @@ async def health_check() -> dict:
     return {
         "status": "healthy" if db_status else "unhealthy",
         "database": "connected" if db_status else "disconnected",
-        "service": "SIS-MS",
+        "service": "tua-susalud",
     }

@@ -1,10 +1,7 @@
 [project]
-name = "default"
-version = "0.2.0"
-description = "This repository contains configurations to set up a Python development environment using VSCode's Dev Container feature. The environment includes uv and Ruff."
-
-authors = [{ name = "a5chin", email = "a5chin.origin+contact@gmail.com" }]
-maintainers = [{ name = "a5chin", email = "a5chin.origin+contact@gmail.com" }]
+name = "tua-susalud"
+version = "0.1.0"
+description = "API para gestionar roles de turno y generar reportes SUSALUD."
 
 requires-python = ">=3.10"
 readme = "README.md"
@@ -16,13 +13,13 @@ dependencies = [
     "fastapi[standard]>=0.116.1",
     "google-cloud-logging>=3.11.3",
     "mkdocs-mermaid2-plugin>=1.2.2",
+    "openpyxl>=3.1.5",
     "pandas>=2.3.3",
     "psycopg2-binary>=2.9.10",
     "pydantic-settings>=2.7.1",
     "result>=0.17.0",
     "sqlalchemy>=2.0.43",
     "sqlmodel>=0.0.24",
-    "zeep>=4.3.2",
 ]
 
 [dependency-groups]
@@ -41,7 +38,6 @@ dev = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["tools"]
-
 
 [tool.commitizen]
 name = "cz_conventional_commits"
