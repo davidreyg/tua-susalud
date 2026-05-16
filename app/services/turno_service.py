@@ -5,6 +5,10 @@ from typing import ClassVar
 
 import pandas as pd
 
+from tools.logger import Logger
+
+logger = Logger(__name__)
+
 
 class TurnoService:
     """Servicio para procesar archivos Excel de roles de turno.
@@ -14,7 +18,6 @@ class TurnoService:
     consolidado con la informacion estructurada.
     """
 
-    # Columnas de identidad que se conservan en el resultado final.
     _COLUMNAS_IDENTIDAD: ClassVar[list[str]] = [
         "N\u00b0",
         "NOMBRES Y APELLIDOS",
@@ -45,15 +48,24 @@ class TurnoService:
                 o no se encuentra la estructura esperada.
 
         """
+        logger.info("Iniciando procesamiento del archivo '%s'...", nombre_original)
+
         try:
             excel_file = pd.ExcelFile(BytesIO(input_bytes))
         except ValueError as exc:
+            logger.exception("No se pudo leer el archivo '%s'", nombre_original)
             msg = f"No se pudo leer el archivo '{nombre_original}': {exc}"
             raise ValueError(msg) from exc
 
         nombres_hojas = excel_file.sheet_names
+        logger.info(
+            "Archivo '%s' cargado correctamente (%d hoja(s))",
+            nombre_original,
+            len(nombres_hojas),
+        )
 
         if not nombres_hojas:
+            logger.warning("El archivo '%s' no contiene hojas.", nombre_original)
             msg = f"El archivo '{nombre_original}' no contiene hojas."
             raise ValueError(msg)
 
@@ -62,12 +74,15 @@ class TurnoService:
         resultados: list[tuple[pd.DataFrame, str]] = []
 
         for hoja in nombres_hojas:
+            nombre_hoja = str(hoja)
+            logger.info("Procesando hoja: '%s'...", nombre_hoja)
             df_raw = pd.read_excel(excel_file, sheet_name=hoja, header=None)
 
             if df_raw.empty or len(df_raw.columns) < min_columnas_validas:
+                logger.warning("Hoja '%s' vacia o invalida. Omitiendo.", nombre_hoja)
                 continue
 
-            cabecera_info = TurnoService._localizar_cabecera(df_raw)
+            cabecera_info = TurnoService._localizar_cabecera(df_raw, nombre_hoja)
             if cabecera_info is None:
                 continue
 
@@ -75,33 +90,57 @@ class TurnoService:
             cabecera = TurnoService._fusionar_cabeceras(fila_4, fila_5)
 
             df_datos = df_raw.iloc[idx_data:].copy()
-            df_procesado = TurnoService._extraer_datos(df_datos, cabecera)
+            df_procesado = TurnoService._extraer_datos(df_datos, cabecera, nombre_hoja)
 
             if df_procesado is None or df_procesado.empty:
                 continue
 
-            nombre_pestana = (
-                hoja[:max_caracteres_pestana]
-                if isinstance(hoja, str)
-                else str(hoja)[:max_caracteres_pestana]
-            )
+            nombre_pestana = nombre_hoja[:max_caracteres_pestana]
             resultados.append((df_procesado, nombre_pestana))
 
+            logger.info(
+                "Hoja '%s' procesada con exito (%d empleado(s)).",
+                hoja,
+                len(df_procesado),
+            )
+
         if not resultados:
+            logger.warning(
+                "El archivo '%s' no contiene datos validos en ninguna hoja.",
+                nombre_original,
+            )
             msg = f"El archivo '{nombre_original}' no contiene datos validos."
             raise ValueError(msg)
+
+        logger.info(
+            "Escribiendo %d hoja(s) en el archivo de salida...", len(resultados)
+        )
 
         output_buffer = BytesIO()
         with pd.ExcelWriter(output_buffer, engine="openpyxl") as writer:  # type: ignore[arg-type]
             for df_procesado, nombre_pestana in resultados:
                 df_procesado.to_excel(writer, index=False, sheet_name=nombre_pestana)
+                logger.debug(
+                    "Pestana '%s' escrita (%d registro(s)).",
+                    nombre_pestana,
+                    len(df_procesado),
+                )
 
         output_buffer.seek(0)
+
+        total_empleados = sum(len(df) for df, _ in resultados)
+        logger.info(
+            "Proceso finalizado. Archivo '%s' generado (%d hoja(s), %d empleado(s)).",
+            nombre_original,
+            len(resultados),
+            total_empleados,
+        )
+
         return output_buffer.getvalue()
 
     @staticmethod
     def _localizar_cabecera(
-        df_raw: pd.DataFrame,
+        df_raw: pd.DataFrame, nombre_hoja: str = "?"
     ) -> tuple[pd.Series, pd.Series, int] | None:
         """Localiza las filas de cabecera en el DataFrame crudo.
 
@@ -111,6 +150,7 @@ class TurnoService:
 
         Args:
             df_raw: DataFrame con los datos crudos de una hoja.
+            nombre_hoja: Nombre de la hoja para los mensajes de log.
 
         Returns:
             Tupla ``(fila_metadatos, fila_dias, idx_inicio_datos)`` o
@@ -121,12 +161,21 @@ class TurnoService:
         coincidencias = df_raw.loc[mascara]
 
         if coincidencias.empty:
+            logger.warning(
+                "No se encontro la celda 'N°' en columna B de la hoja '%s'. Omitiendo.",
+                nombre_hoja,
+            )
             return None
 
         idx_fila_4: int = coincidencias.index[0]  # type: ignore[assignment]
         idx_fila_5: int = idx_fila_4 + 1
 
         if idx_fila_5 >= len(df_raw):
+            logger.warning(
+                "Estructura incompleta en la hoja '%s' (falta fila de dias). "
+                "Omitiendo.",
+                nombre_hoja,
+            )
             return None
 
         fila_4 = df_raw.iloc[idx_fila_4].fillna("").astype(str).str.strip()
@@ -165,7 +214,9 @@ class TurnoService:
 
     @staticmethod
     def _extraer_datos(
-        df_datos: pd.DataFrame, cabecera: list[str]
+        df_datos: pd.DataFrame,
+        cabecera: list[str],
+        nombre_hoja: str = "?",
     ) -> pd.DataFrame | None:
         """Extrae y filtra los datos de empleados del DataFrame.
 
@@ -176,6 +227,7 @@ class TurnoService:
             df_datos: DataFrame con las filas de datos (ya sin las
                 filas de cabecera).
             cabecera: Lista con los nombres de columna finales.
+            nombre_hoja: Nombre de la hoja para los mensajes de log.
 
         Returns:
             DataFrame limpio con los datos de empleados, o ``None`` si
@@ -190,6 +242,10 @@ class TurnoService:
         df_filtrado = df_datos.loc[mascara_id].copy()
 
         if df_filtrado.empty:
+            logger.warning(
+                "No se encontraron registros de empleados en la hoja '%s'. Omitiendo.",
+                nombre_hoja,
+            )
             return None
 
         df_filtrado[col_id] = pd.to_numeric(df_filtrado[col_id]).astype(int)
@@ -205,5 +261,12 @@ class TurnoService:
 
         for col in {"NOMBRES Y APELLIDOS", "CARG."} & set(df_final.columns):
             df_final[col] = df_final[col].astype(str).str.strip()
+
+        logger.debug(
+            "Datos extraidos en '%s': %d fila(s), %d columna(s)",
+            nombre_hoja,
+            len(df_final),
+            len(cols_finales),
+        )
 
         return df_final
