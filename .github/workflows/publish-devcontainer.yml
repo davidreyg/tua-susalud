@@ -1,12 +1,12 @@
 name: Publish Devcontainer to GHCR
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - ".devcontainer/Dockerfile"
-      - ".github/workflows/publish-devcontainer.yml"
-      - ".python-version"
+  # push:
+  #   branches: [main]
+  #   paths:
+  #     - ".devcontainer/Dockerfile"
+  #     - ".github/workflows/publish-devcontainer.yml"
+  #     - ".python-version"
 
   workflow_dispatch:
 

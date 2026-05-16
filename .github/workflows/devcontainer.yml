@@ -1,13 +1,13 @@
 name: Devcontainer
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - ".devcontainer/compose.yml"
-      - ".devcontainer/Dockerfile"
-      - ".github/workflows/devcontainer.yml"
-      - ".python-version"
+  # push:
+  #   branches: [main]
+  #   paths:
+  #     - ".devcontainer/compose.yml"
+  #     - ".devcontainer/Dockerfile"
+  #     - ".github/workflows/devcontainer.yml"
+  #     - ".python-version"
 
   pull_request:
     branches: [main]
