@@ -8,6 +8,7 @@ from fastapi.responses import StreamingResponse
 
 from app.api.exceptions import CustomExceptionCode
 from app.services.excel_sheet_service import ExcelSheetService
+from app.services.generar_data_tua_service import GenerarDataTuaService
 from app.services.turno_service import TurnoService
 
 router = APIRouter(prefix="/tua", tags=["TUA SUSALUD"])
@@ -159,5 +160,99 @@ async def leer_hoja(
             error_code=CustomExceptionCode.FILE_PROCESSING_ERROR,
             http_status_code=422,
         ) from exc
+
+    return resultado
+
+
+@router.post(
+    "/generar-data",
+    summary="Generar datos TUA desde un archivo Excel de input",
+    responses=APIResponse.default(),  # type: ignore
+)
+async def generar_data(
+    archivo: Annotated[
+        UploadFile,
+        File(description="Archivo Excel (.xlsx) con datos de input"),
+    ],
+    hoja: Annotated[
+        str,
+        Form(description="Nombre de la hoja o indice 1-based (ej: '1', '2')"),
+    ],
+) -> dict:
+    """Genera datos de entrada TUA a partir de un archivo Excel.
+
+    Lee los registros de la hoja especificada, busca cada nombre completo
+    en la base de datos de empleados y construye registros TUA
+    consolidados con informacion del establecimiento y empleado.
+
+    Args:
+        archivo: Archivo Excel subido por el usuario.
+        hoja: Nombre exacto de la hoja o indice 1-based.
+
+    Returns:
+        Diccionario con ``datos`` (lista de registros TUA),
+        ``total_registros``, ``empleados_encontrados``,
+        ``empleados_no_encontrados`` y ``nombres_no_encontrados``.
+
+    Raises:
+        APIException: Si el archivo no es valido, la hoja no existe
+            o ocurre un error durante el procesamiento.
+
+    """
+    from app.database import get_database_config
+
+    if not archivo.filename or not archivo.filename.lower().endswith(".xlsx"):
+        raise APIException(
+            error_code=CustomExceptionCode.FILE_INVALID_EXTENSION,
+            http_status_code=400,
+        )
+
+    if not hoja.strip():
+        raise APIException(
+            error_code=CustomExceptionCode.INVALID_SHEET_NAME,
+            http_status_code=400,
+        )
+
+    try:
+        input_bytes = await archivo.read()
+    except Exception:
+        raise APIException(
+            error_code=CustomExceptionCode.FILE_READ_ERROR,
+            http_status_code=400,
+        ) from None
+
+    if not input_bytes:
+        raise APIException(
+            error_code=CustomExceptionCode.FILE_EMPTY,
+            http_status_code=400,
+        )
+
+    db_config = get_database_config()
+    session = db_config.get_session()
+    try:
+        resultado = GenerarDataTuaService.procesar(
+            input_bytes=input_bytes,
+            nombre_hoja=hoja,
+            nombre_archivo=archivo.filename,
+            session=session,
+        )
+    except ValueError as exc:
+        error_msg = str(exc).lower()
+        if "no existe" in error_msg or "fuera de rango" in error_msg:
+            raise APIException(
+                error_code=CustomExceptionCode.SHEET_NOT_FOUND,
+                http_status_code=404,
+            ) from None
+        raise APIException(
+            error_code=CustomExceptionCode.FILE_PROCESSING_ERROR,
+            http_status_code=422,
+        ) from None
+    except Exception:
+        raise APIException(
+            error_code=CustomExceptionCode.FILE_PROCESSING_ERROR,
+            http_status_code=422,
+        ) from None
+    finally:
+        session.close()
 
     return resultado
