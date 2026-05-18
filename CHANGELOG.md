@@ -3,6 +3,15 @@
 ﻿
 ﻿
 ﻿
+﻿
+## [0.9.0] - 2026-05-18
+### 🚀 Nuevas funcionalidades
+
+- :sparkles: Actualiza configuración de Docker y devcontainer para incluir Python 3.13 y mejorar la conectividad DNS ([`b648dd4`](https://github.com/davidreyg/tua-susalud/commit/b648dd43c4128767c61a64800b8930b2dabd5a11))
+### 🐛 Correcciones de errores
+
+- :bug: Actualiza credenciales de base de datos en el archivo de configuración ([`24ef9bc`](https://github.com/davidreyg/tua-susalud/commit/24ef9bc599f794da520db1c37cf34ca8d16706ae))
+
 ## [0.8.0] - 2026-05-18
 ### 🚀 Nuevas funcionalidades
 
