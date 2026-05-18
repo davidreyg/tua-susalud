@@ -3,6 +3,14 @@
 from pydantic import BaseModel
 
 
+class TurnoItem(BaseModel):
+    """Turno asignado a un profesional en un dia especifico."""
+
+    dia: int
+    hora_entrada: str | None = None
+    hora_salida: str | None = None
+
+
 class TuaInputDataResponse(BaseModel):
     """Modelo tipado para datos de entrada TUA procesados.
 
@@ -21,4 +29,4 @@ class TuaInputDataResponse(BaseModel):
     nombres: str
     especialidad: str
     servicio: str
-    turnos: dict[int, dict[str, str]]
+    turnos: list[TurnoItem]
