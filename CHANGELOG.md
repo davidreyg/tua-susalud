@@ -2,6 +2,19 @@
 ﻿
 ﻿
 ﻿
+﻿
+## [0.8.0] - 2026-05-18
+### 🚀 Nuevas funcionalidades
+
+- :sparkles: Agrega archivo Excel TUASUSALUD para generación de datos ([`5602c1e`](https://github.com/davidreyg/tua-susalud/commit/5602c1e03d09f16d5fb6eeda755a64881a75de21))
+- :sparkles: Agrega endpoint para generar datos TUA desde archivo Excel ([`0a30dba`](https://github.com/davidreyg/tua-susalud/commit/0a30dba149283cfd02aaea9b4c96fea78b0dff52))
+- :sparkles: Agrega repositorio para el modelo Empleado con métodos CRUD ([`352da44`](https://github.com/davidreyg/tua-susalud/commit/352da44b79c8d645fb827c1ab02faa6066ef56f9))
+- :sparkles: Agrega modelo y migración para la tabla de empleados ([`6c5512a`](https://github.com/davidreyg/tua-susalud/commit/6c5512a1d9255fd97d47ff0dda040f0e3511a28b))
+### 🐛 Correcciones de errores
+
+- :sparkles: Corrige migración y modelo para Empleado ([`16f0884`](https://github.com/davidreyg/tua-susalud/commit/16f088489a4c8ab46f13d968728ba47c2bd15e4b))
+- :bricks: Corrige la extracción de datos en el servicio de turno para manejar correctamente los valores numéricos ([`3b0f611`](https://github.com/davidreyg/tua-susalud/commit/3b0f611faf73517aa81bb7987a90578305709b23))
+
 ## [0.7.0] - 2026-05-18
 ### 🚀 Nuevas funcionalidades
 
