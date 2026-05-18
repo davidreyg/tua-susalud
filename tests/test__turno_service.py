@@ -60,8 +60,8 @@ class TestTurnoService:
             "NOMBRES Y APELLIDOS",
             "COND.",
             "CARG.",
-            "D\u00eda 1",
-            "D\u00eda 2",
+            "1",
+            "2",
         }
         assert columnas_esperadas.issubset(set(df_resultado.columns))
         assert len(df_resultado) == 2  # noqa: PLR2004

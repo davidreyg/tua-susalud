@@ -189,7 +189,7 @@ class TurnoService:
 
         Las columnas en los indices 1-4 (N°, NOMBRES, COND., CARG.) se
         toman de ``fila_4``. Las columnas siguientes (indice >4) toman
-        el valor de ``fila_5`` con el prefijo ``"Día "``.
+        directamente el valor numerico de ``fila_5``.
 
         Args:
             fila_4: Fila de metadatos (contiene los nombres fijos).
@@ -206,7 +206,7 @@ class TurnoService:
                 valor = fila_4.iloc[i] or f"COL_{i}"
                 cabecera.append(str(valor))
             elif i > limite and fila_5.iloc[i] != "":
-                cabecera.append(f"D\u00eda {fila_5.iloc[i]}")
+                cabecera.append(str(fila_5.iloc[i]))
             else:
                 cabecera.append(f"COL_{i}")
 
@@ -254,7 +254,7 @@ class TurnoService:
         cols_identidad = [
             c for c in TurnoService._COLUMNAS_IDENTIDAD if c in cols_disponibles
         ]
-        cols_dias = [c for c in df_filtrado.columns if c.startswith("D\u00eda ")]
+        cols_dias = [c for c in df_filtrado.columns if str(c).strip().isdigit()]
         cols_finales = cols_identidad + cols_dias
 
         df_final = df_filtrado[cols_finales].copy()
