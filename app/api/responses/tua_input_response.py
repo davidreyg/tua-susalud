@@ -21,4 +21,4 @@ class TuaInputDataResponse(BaseModel):
     nombres: str
     especialidad: str
     servicio: str
-    turnos: dict[int, tuple[str, str]]
+    turnos: dict[int, dict[str, str]]

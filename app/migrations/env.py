@@ -6,6 +6,7 @@ from sqlmodel import SQLModel
 
 from app.database import DatabaseConfig
 from app.models.leyenda import Leyenda
+from app.models.empleado import Empleado
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
