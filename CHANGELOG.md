@@ -4,6 +4,13 @@
 ﻿
 ﻿
 ﻿
+﻿
+## [0.9.1] - 2026-05-18
+### 🐛 Correcciones de errores
+
+- :ambulance: Agrega manejo de turnos en la construcción de registros TUA desde Excel ([`9783102`](https://github.com/davidreyg/tua-susalud/commit/97831024c3f0c77d9d1fda02c1815a7a51c6ad8b))
+- :ambulance: Modifica el tipo de datos de 'turnos' en TuaInputDataResponse y agrega método get_by_sigla en LeyendaRepository ([`6595040`](https://github.com/davidreyg/tua-susalud/commit/659504060d70c54e7a4a5cb0653fefabcc68cb7e))
+
 ## [0.9.0] - 2026-05-18
 ### 🚀 Nuevas funcionalidades
 
