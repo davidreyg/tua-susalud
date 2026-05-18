@@ -5,6 +5,14 @@
 ﻿
 ﻿
 ﻿
+﻿
+## [0.9.2] - 2026-05-18
+### 🐛 Correcciones de errores
+
+- :bug: Omite filas con "SERV. X TERCEROS" en el procesamiento de registros TUA ([`3029c81`](https://github.com/davidreyg/tua-susalud/commit/3029c81c712db3c2673900485441887938ae0f3b))
+- :ambulance: Modifica método get_by_sigla para incluir filtro opcional por cargo y actualiza el manejo de turnos en GenerarDataTuaService ([`eed038a`](https://github.com/davidreyg/tua-susalud/commit/eed038a5781079a48ffe1de83f43e28f5b00bfaf))
+- :pencil2: Corrige tipado de TuaInputDataRsponse ([`bc59cb1`](https://github.com/davidreyg/tua-susalud/commit/bc59cb1a3036db95e1db1b1c425eef43b3a703ce))
+
 ## [0.9.1] - 2026-05-18
 ### 🐛 Correcciones de errores
 

@@ -1,6 +1,6 @@
 [project]
 name = "tua-susalud"
-version = "0.9.1"
+version = "0.9.2"
 description = "API para gestionar roles de turno y generar reportes SUSALUD."
 
 requires-python = ">=3.10"
