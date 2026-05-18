@@ -83,6 +83,11 @@ class GenerarDataTuaService:
 
         try:
             for row in registros:
+                condicion = str(row.get("COND.", "")).strip()
+                if "SERV. X TERCEROS" in condicion:
+                    logger.debug("Fila con SERV. X TERCEROS, omitiendo.")
+                    continue
+
                 nombre_completo = str(row.get("NOMBRES Y APELLIDOS", "")).strip()
 
                 if not nombre_completo:
