@@ -1,3 +1,5 @@
+"""Requests para procesamiento de roles de turno."""
+
 from pydantic import BaseModel
 from sqlmodel import Field
 
