@@ -9,7 +9,7 @@ from fastapi.responses import StreamingResponse
 from app.api.exceptions import CustomExceptionCode
 from app.services.turno_service import TurnoService
 
-router = APIRouter(prefix="/api/turno", tags=["Turno"])
+router = APIRouter(prefix="/turno", tags=["Turno"])
 
 
 @router.post(
