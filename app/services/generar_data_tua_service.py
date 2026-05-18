@@ -1,5 +1,6 @@
 """Servicio para generar datos TUA desde archivo Excel de input."""
 
+import math
 from typing import Any
 
 from sqlmodel import Session
@@ -7,6 +8,7 @@ from sqlmodel import Session
 from app.api.responses.tua_input_response import TuaInputDataResponse
 from app.models.empleado import Empleado
 from app.repositories.empleado import EmpleadoRepository
+from app.repositories.leyenda import LeyendaRepository
 from app.services.excel_sheet_service import ExcelSheetService
 from tools.logger import Logger
 
@@ -90,7 +92,9 @@ class GenerarDataTuaService:
                 empleado = empleado_repo.search_by_nombre_completo(nombre_completo)
 
                 if empleado:
-                    tua_record = GenerarDataTuaService._construir_tua_record(empleado)
+                    tua_record = GenerarDataTuaService._construir_tua_record(
+                        empleado, row, session
+                    )
                     datos.append(tua_record)
                     logger.debug(
                         "Empleado encontrado: '%s' (%s)",
@@ -121,16 +125,44 @@ class GenerarDataTuaService:
         }
 
     @staticmethod
-    def _construir_tua_record(empleado: Empleado) -> TuaInputDataResponse:
+    def _construir_tua_record(
+        empleado: Empleado,
+        row: dict[str, Any],
+        session: Session,
+    ) -> TuaInputDataResponse:
         """Construye un registro TUA a partir de un empleado.
 
         Args:
             empleado: Instancia de Empleado encontrada en la BD.
+            row: Fila del Excel con los datos de turnos por dia.
+            session: Sesion de base de datos para consultas.
 
         Returns:
             Registro TUA tipado.
 
         """
+        turnos: dict[int, dict[str, str]] = {}
+        leyenda_repo = LeyendaRepository(session)
+
+        for day in range(1, 32):
+            raw = row.get(str(day))
+
+            denominacion = ""
+            if raw is not None and not (isinstance(raw, float) and math.isnan(raw)):
+                denominacion = str(raw).strip()
+
+            if denominacion:
+                leyenda = leyenda_repo.get_by_sigla(denominacion)
+                if leyenda:
+                    turnos[day] = {
+                        "hora_entrada": leyenda.hora_inicio,
+                        "hora_salida": leyenda.hora_fin,
+                    }
+                else:
+                    turnos[day] = {}
+            else:
+                turnos[day] = {}
+
         return TuaInputDataResponse(
             codigo_unico=CODIGO_UNICO,
             nombre_establecimiento=NOMBRE_ESTABLECIMIENTO,
@@ -143,5 +175,5 @@ class GenerarDataTuaService:
             nombres=empleado.nombres,
             especialidad=empleado.especialidad,
             servicio=empleado.servicio,
-            turnos={},
+            turnos=turnos,
         )
