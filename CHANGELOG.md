@@ -1,6 +1,19 @@
 ﻿
 ﻿
 ﻿
+﻿
+## [0.7.0] - 2026-05-18
+### 🚀 Nuevas funcionalidades
+
+- :sparkles: Agrega servicio para lectura de hojas en archivos Excel ([`09c333f`](https://github.com/davidreyg/tua-susalud/commit/09c333fa5719723542404a34f4ec93a5f80acc48))
+- :sparkles: Agrega modelos y requests tipados para la API ([`78e708c`](https://github.com/davidreyg/tua-susalud/commit/78e708caadfcb746e15a9515e44ecb15958b17ca))
+### 🐛 Correcciones de errores
+
+- :bricks: Corrige rutas ([`9f6b1c5`](https://github.com/davidreyg/tua-susalud/commit/9f6b1c56851b81da4cd5320cc53f831414b39a80))
+- :adhesive_bandage: quita prefijo api ([`a683236`](https://github.com/davidreyg/tua-susalud/commit/a68323682dc38bb2323058e89a4912b75d9f6d21))
+- :sparkles: Corrige migración y modelo para la tabla leyenda ([`560d0b2`](https://github.com/davidreyg/tua-susalud/commit/560d0b2d72a9b3336b7db8610be2e88c23120dd1))
+- :wrench: Expone puerto 5432 de postgresql en devcontainer ([`15397f0`](https://github.com/davidreyg/tua-susalud/commit/15397f01bd16e686e74c255cfbd2324586d747b1))
+
 ## [0.6.0] - 2026-05-16
 ### 🚀 Nuevas funcionalidades
 
