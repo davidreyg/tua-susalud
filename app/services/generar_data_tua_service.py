@@ -5,7 +5,7 @@ from typing import Any
 
 from sqlmodel import Session
 
-from app.api.responses.tua_input_response import TuaInputDataResponse
+from app.api.responses.tua_input_response import TuaInputDataResponse, TurnoItem
 from app.models.empleado import Empleado
 from app.repositories.empleado import EmpleadoRepository
 from app.repositories.leyenda import LeyendaRepository
@@ -141,7 +141,7 @@ class GenerarDataTuaService:
             Registro TUA tipado.
 
         """
-        turnos: dict[int, dict[str, str]] = {}
+        turnos: list[TurnoItem] = []
         leyenda_repo = LeyendaRepository(session)
 
         for day in range(1, 32):
@@ -151,17 +151,22 @@ class GenerarDataTuaService:
             if raw is not None and not (isinstance(raw, float) and math.isnan(raw)):
                 denominacion = str(raw).strip()
 
+            cargo = str(row.get("CARG.", "")).strip()
+
             if denominacion:
-                leyenda = leyenda_repo.get_by_sigla(denominacion)
+                leyenda = leyenda_repo.get_by_sigla(denominacion, cargo)
                 if leyenda:
-                    turnos[day] = {
-                        "hora_entrada": leyenda.hora_inicio,
-                        "hora_salida": leyenda.hora_fin,
-                    }
+                    turnos.append(
+                        TurnoItem(
+                            dia=day,
+                            hora_entrada=leyenda.hora_inicio,
+                            hora_salida=leyenda.hora_fin,
+                        )
+                    )
                 else:
-                    turnos[day] = {}
+                    turnos.append(TurnoItem(dia=day))
             else:
-                turnos[day] = {}
+                turnos.append(TurnoItem(dia=day))
 
         return TuaInputDataResponse(
             codigo_unico=CODIGO_UNICO,

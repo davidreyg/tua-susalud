@@ -18,9 +18,11 @@ class LeyendaRepository:
         """Obtener una leyenda por su ID."""
         return self.session.get(Leyenda, leyenda_id)
 
-    def get_by_sigla(self, sigla: str) -> Leyenda | None:
-        """Obtener una leyenda por su sigla."""
+    def get_by_sigla(self, sigla: str, cargo: str | None = None) -> Leyenda | None:
+        """Obtener una leyenda por su sigla y opcionalmente por cargo."""
         stmt = select(Leyenda).where(col(Leyenda.sigla) == sigla)
+        if cargo:
+            stmt = stmt.where(col(Leyenda.cargo) == cargo)
         return self.session.exec(stmt).first()
 
     def create(self, leyenda: Leyenda) -> Leyenda:
