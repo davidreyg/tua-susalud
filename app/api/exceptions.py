@@ -39,3 +39,13 @@ class CustomExceptionCode(BaseExceptionCode):
         "Error al procesar el archivo.",
         "El archivo no tiene el formato esperado o no contiene datos validos.",
     )
+    SHEET_NOT_FOUND = (
+        "SHEET-404",
+        "Hoja no encontrada.",
+        "La hoja especificada no existe en el archivo Excel.",
+    )
+    INVALID_SHEET_NAME = (
+        "SHEET-400",
+        "Nombre de hoja invalido.",
+        "El nombre de la hoja no puede estar vacio.",
+    )
