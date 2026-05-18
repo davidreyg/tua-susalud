@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from tools.logger import Logger
 
-from .api.routes_turno import router as turno_router
+from .api.routes_tua import router as tua_router
 from .database import db_config
 
 # Configurar logging
@@ -58,7 +58,7 @@ app.add_middleware(
 )
 
 # Incluir routers
-app.include_router(turno_router)
+app.include_router(tua_router)
 
 
 @app.get("/", tags=["Root"])
