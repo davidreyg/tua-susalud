@@ -12,6 +12,12 @@
 ﻿
 ﻿
 ﻿
+﻿
+## [0.15.1] - 2026-05-19
+### 🐛 Correcciones de errores
+
+- :boom: feat: :sparkles: Elimina la configuración de red externa y ajusta la exposición de puertos en el servicio de base de datos ([`4a4a1c0`](https://github.com/davidreyg/tua-susalud/commit/4a4a1c01f894f6ca6d56a7ad105816efa0e6a2ee))
+
 ## [0.15.0] - 2026-05-19
 ### 🚀 Nuevas funcionalidades
 
