@@ -26,19 +26,21 @@ FROM python:$VARIANT-slim
 ENV TZ=America/Lima
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Optional: add the application virtualenv to search path.
 ENV PATH=/app/bin:$PATH
 
 RUN groupadd -r app && \
     useradd -r -d /app -g app -N app
-# Copy the pre-built `/app` directory to the runtime container
-# and change the ownership to user app and group app in one step.
+
 COPY --from=build --chown=app:app /app /app
 WORKDIR /app
-COPY ./app/ ./app/
-COPY ./tools/ ./tools/
-COPY ./alembic.ini .
+
+COPY --chown=app:app ./app/ ./app/
+COPY --chown=app:app ./tools/ ./tools/
+COPY --chown=app:app ./alembic.ini .
 
 USER app
 EXPOSE 8000
-CMD ["fastapi", "run", "app/main.py", "--host", "0.0.0.0"]
+
+
+# Número de workers = (2 × núcleos) + 1  es la fórmula recomendada
+CMD ["fastapi", "run", "app/main.py", "--host", "0.0.0.0", "--workers", "4"]
