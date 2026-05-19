@@ -6,6 +6,12 @@
 ﻿
 ﻿
 ﻿
+﻿
+## [0.10.0] - 2026-05-19
+### 🚀 Nuevas funcionalidades
+
+- :sparkles: Agrega servicio para escribir datos TUA en plantilla Excel y excepciones personalizadas para manejo de errores ([`4af9ce7`](https://github.com/davidreyg/tua-susalud/commit/4af9ce7f7f73685c73c8a13445f89fa423fb582a))
+
 ## [0.9.2] - 2026-05-18
 ### 🐛 Correcciones de errores
 
