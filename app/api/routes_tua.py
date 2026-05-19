@@ -82,6 +82,7 @@ async def limpiar_roles(
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={
             "Content-Disposition": f'attachment; filename="{nombre_descarga}"',
+            "Content-Length": str(len(output_bytes)),
         },
     )
 
@@ -379,5 +380,6 @@ async def escribir_data_tua(
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={
             "Content-Disposition": 'attachment; filename="TUASUSALUD_data.xlsx"',
+            "Content-Length": str(len(output_bytes)),
         },
     )
