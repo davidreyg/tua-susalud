@@ -7,6 +7,8 @@ from fastapi import APIRouter, File, Form, UploadFile
 from fastapi.responses import StreamingResponse
 
 from app.api.exceptions import CustomExceptionCode
+from app.api.responses.tua_input_response import TuaInputDataResponse
+from app.services.escribir_data_tua_service import EscribirDataTuaService
 from app.services.excel_sheet_service import ExcelSheetService
 from app.services.generar_data_tua_service import GenerarDataTuaService
 from app.services.turno_service import TurnoService
@@ -256,3 +258,63 @@ async def generar_data(
         session.close()
 
     return resultado
+
+
+@router.post(
+    "/escribir-data-tua",
+    summary="Escribir datos en la plantilla TUA",
+    response_class=StreamingResponse,
+    responses=APIResponse.default(),  # type: ignore
+)
+async def escribir_data_tua(
+    datos: list[TuaInputDataResponse],
+) -> StreamingResponse:
+    """Escribe los datos de entrada TUA en la plantilla Excel.
+
+    Recibe una lista de registros TUA con informacion de profesionales,
+    establecimiento y turnos, y los escribe en la plantilla
+    ``TUASUSALUD.xlsx`` respetando el formato de columnas predefinido.
+
+    Args:
+        datos: Lista de registros TUA a escribir.
+
+    Returns:
+        Respuesta binaria con el archivo Excel generado para descargar.
+
+    Raises:
+        APIException: Si la lista esta vacia, los datos exceden
+            el limite o falla la escritura.
+
+    """
+    if not datos:
+        raise APIException(
+            error_code=CustomExceptionCode.DATA_EMPTY,
+            http_status_code=400,
+        )
+
+    try:
+        output_bytes = EscribirDataTuaService.escribir(datos)
+    except ValueError as exc:
+        error_msg = str(exc).lower()
+        if "excede" in error_msg or "maximo" in error_msg:
+            raise APIException(
+                error_code=CustomExceptionCode.DATA_TOO_LARGE,
+                http_status_code=413,
+            ) from exc
+        raise APIException(
+            error_code=CustomExceptionCode.DATA_WRITE_ERROR,
+            http_status_code=422,
+        ) from exc
+    except Exception:
+        raise APIException(
+            error_code=CustomExceptionCode.DATA_WRITE_ERROR,
+            http_status_code=500,
+        ) from None
+
+    return StreamingResponse(
+        iter([output_bytes]),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={
+            "Content-Disposition": 'attachment; filename="TUASUSALUD_data.xlsx"',
+        },
+    )

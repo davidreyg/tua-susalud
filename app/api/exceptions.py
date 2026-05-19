@@ -49,3 +49,18 @@ class CustomExceptionCode(BaseExceptionCode):
         "Nombre de hoja invalido.",
         "El nombre de la hoja no puede estar vacio.",
     )
+    DATA_EMPTY = (
+        "DATA-400",
+        "No hay datos para procesar.",
+        "La lista de datos enviada esta vacia.",
+    )
+    DATA_TOO_LARGE = (
+        "DATA-413",
+        "Demasiados registros.",
+        "La cantidad de registros supera el limite permitido.",
+    )
+    DATA_WRITE_ERROR = (
+        "DATA-500",
+        "Error al escribir los datos.",
+        "No se pudo generar el archivo Excel.",
+    )
