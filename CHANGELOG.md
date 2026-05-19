@@ -8,6 +8,12 @@
 ﻿
 ﻿
 ﻿
+﻿
+## [0.12.0] - 2026-05-19
+### 🚀 Nuevas funcionalidades
+
+- :sparkles: Agrega configuración de Docker Compose para el servicio de base de datos PostgreSQL y mejora del healthcheck ([`7d3b2b2`](https://github.com/davidreyg/tua-susalud/commit/7d3b2b2a21082fab3c3b41216a097071267270d5))
+
 ## [0.11.0] - 2026-05-19
 ### 🚀 Nuevas funcionalidades
 
