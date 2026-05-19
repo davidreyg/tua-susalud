@@ -11,6 +11,12 @@
 ﻿
 ﻿
 ﻿
+﻿
+## [0.15.0] - 2026-05-19
+### 🚀 Nuevas funcionalidades
+
+- :sparkles: Optimiza la escritura de datos TUA utilizando asyncio para mejorar el rendimiento ([`92936b4`](https://github.com/davidreyg/tua-susalud/commit/92936b4656d1e088f92f57a2454a3c6b1039eabe))
+
 ## [0.14.0] - 2026-05-19
 ### 🚀 Nuevas funcionalidades
 
