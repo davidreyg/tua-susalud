@@ -1,5 +1,6 @@
 """Rutas para el procesamiento de roles de turno."""
 
+import asyncio
 from typing import Annotated
 
 from api_exception import APIException, APIResponse
@@ -357,7 +358,7 @@ async def escribir_data_tua(
         )
 
     try:
-        output_bytes = EscribirDataTuaService.escribir(datos)
+        output_bytes = await asyncio.to_thread(EscribirDataTuaService.escribir, datos)
     except ValueError as exc:
         error_msg = str(exc).lower()
         if "excede" in error_msg or "maximo" in error_msg:
