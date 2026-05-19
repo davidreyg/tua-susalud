@@ -7,6 +7,12 @@
 ﻿
 ﻿
 ﻿
+﻿
+## [0.11.0] - 2026-05-19
+### 🚀 Nuevas funcionalidades
+
+- :sparkles: Agrega endpoint para listar hojas de un archivo Excel y mejora manejo de archivos en ExcelSheetService ([`51febd9`](https://github.com/davidreyg/tua-susalud/commit/51febd9f292249388a6f72930a0eec0b055b7ab5))
+
 ## [0.10.0] - 2026-05-19
 ### 🚀 Nuevas funcionalidades
 
