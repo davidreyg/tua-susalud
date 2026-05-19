@@ -261,6 +261,69 @@ async def generar_data(
 
 
 @router.post(
+    "/listar-hojas",
+    summary="Listar las hojas de un archivo Excel",
+    responses=APIResponse.default(),  # type: ignore
+)
+async def listar_hojas(
+    archivo: Annotated[
+        UploadFile,
+        File(description="Archivo Excel (.xlsx)"),
+    ],
+) -> dict:
+    """Retorna los nombres de todas las hojas de un archivo Excel.
+
+    Recibe un archivo .xlsx y devuelve la lista de nombres de hojas
+    disponibles en el archivo.
+
+    Args:
+        archivo: Archivo Excel subido por el usuario.
+
+    Returns:
+        Diccionario con ``hojas`` (lista de nombres) y ``total``
+        (cantidad de hojas).
+
+    Raises:
+        APIException: Si el archivo no es valido o no se puede procesar.
+
+    """
+    if not archivo.filename or not archivo.filename.lower().endswith(".xlsx"):
+        raise APIException(
+            error_code=CustomExceptionCode.FILE_INVALID_EXTENSION,
+            http_status_code=400,
+        )
+
+    try:
+        input_bytes = await archivo.read()
+    except Exception as exc:
+        raise APIException(
+            error_code=CustomExceptionCode.FILE_READ_ERROR,
+            http_status_code=400,
+        ) from exc
+
+    if not input_bytes:
+        raise APIException(
+            error_code=CustomExceptionCode.FILE_EMPTY,
+            http_status_code=400,
+        )
+
+    try:
+        hojas = ExcelSheetService.listar_hojas(
+            input_bytes=input_bytes,
+            nombre_archivo=archivo.filename,
+        )
+    except ValueError as exc:
+        raise APIException(
+            error_code=CustomExceptionCode.FILE_PROCESSING_ERROR,
+            http_status_code=422,
+        ) from exc
+    finally:
+        del input_bytes
+
+    return {"hojas": hojas, "total": len(hojas)}
+
+
+@router.post(
     "/escribir-data-tua",
     summary="Escribir datos en la plantilla TUA",
     response_class=StreamingResponse,

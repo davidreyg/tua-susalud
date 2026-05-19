@@ -152,13 +152,13 @@ class ExcelSheetService:
         logger.info("Listando hojas del archivo '%s'...", nombre_archivo)
 
         try:
-            excel_file = pd.ExcelFile(BytesIO(input_bytes))
+            with pd.ExcelFile(BytesIO(input_bytes)) as excel_file:
+                nombres: list[str] = [str(n) for n in excel_file.sheet_names]
         except ValueError as exc:
             logger.exception("No se pudo leer el archivo '%s'", nombre_archivo)
             msg = f"No se pudo leer el archivo '{nombre_archivo}': {exc}"
             raise ValueError(msg) from exc
 
-        nombres: list[str] = [str(n) for n in excel_file.sheet_names]
         logger.info(
             "Archivo '%s' tiene %d hoja(s): %s",
             nombre_archivo,
