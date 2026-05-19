@@ -10,6 +10,12 @@
 ﻿
 ﻿
 ﻿
+﻿
+## [0.14.0] - 2026-05-19
+### 🚀 Nuevas funcionalidades
+
+- :sparkles: Agrega encabezado Content-Length en las respuestas de descarga de archivos Excel ([`9150ac9`](https://github.com/davidreyg/tua-susalud/commit/9150ac95ed93cccaf15b1ede070b1482936aaf4b))
+
 ## [0.13.0] - 2026-05-19
 ### 🚀 Nuevas funcionalidades
 
