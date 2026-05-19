@@ -9,6 +9,12 @@
 ﻿
 ﻿
 ﻿
+﻿
+## [0.13.0] - 2026-05-19
+### 🚀 Nuevas funcionalidades
+
+- :sparkles: Mejora la configuración del Dockerfile, ajustando la copia de archivos y añadiendo la opción de workers en el comando de inicio ([`21ad365`](https://github.com/davidreyg/tua-susalud/commit/21ad365ec550208d97ec02b2b1dde603447d7283))
+
 ## [0.12.0] - 2026-05-19
 ### 🚀 Nuevas funcionalidades
 
