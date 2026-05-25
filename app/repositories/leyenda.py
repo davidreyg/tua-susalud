@@ -1,3 +1,6 @@
+import re
+
+from sqlalchemy import func
 from sqlmodel import Session, col, select
 
 from app.models.leyenda import Leyenda
@@ -19,8 +22,16 @@ class LeyendaRepository:
         return self.session.get(Leyenda, leyenda_id)
 
     def get_by_sigla(self, sigla: str, cargo: str | None = None) -> Leyenda | None:
-        """Obtener una leyenda por su sigla y opcionalmente por cargo."""
-        stmt = select(Leyenda).where(col(Leyenda.sigla) == sigla)
+        """Obtener una leyenda por su sigla y opcionalmente por cargo.
+
+        Normaliza el input y la columna removiendo espacios en blanco
+        y comparando en mayusculas para tolerar diferencias de formato.
+        """
+        sigla_normalized = re.sub(r"\s+", "", sigla).upper()
+        stmt = select(Leyenda).where(
+            func.upper(func.regexp_replace(col(Leyenda.sigla), "\\s", "", "g"))
+            == sigla_normalized
+        )
         if cargo:
             stmt = stmt.where(col(Leyenda.cargo) == cargo)
         return self.session.exec(stmt).first()
