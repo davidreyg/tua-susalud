@@ -64,3 +64,8 @@ class CustomExceptionCode(BaseExceptionCode):
         "Error al escribir los datos.",
         "No se pudo generar el archivo Excel.",
     )
+    LEYENDA_NOT_FOUND = (
+        "LEYENDA-404",
+        "Leyenda no encontrada.",
+        "La leyenda solicitada no existe en la base de datos.",
+    )

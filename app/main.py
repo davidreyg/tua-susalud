@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from tools.logger import Logger
 
+from .api.routes_leyenda import router as leyenda_router
 from .api.routes_tua import router as tua_router
 from .database import db_config
 
@@ -59,6 +60,7 @@ app.add_middleware(
 
 # Incluir routers
 app.include_router(tua_router)
+app.include_router(leyenda_router)
 
 
 @app.get("/", tags=["Root"])
