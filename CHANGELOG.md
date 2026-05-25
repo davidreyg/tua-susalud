@@ -14,6 +14,12 @@
 ﻿
 ﻿
 ﻿
+﻿
+## [0.17.0] - 2026-05-25
+### 🚀 Nuevas funcionalidades
+
+- :boom: Normaliza la búsqueda de leyendas por sigla para tolerar diferencias de formato ([`e504fac`](https://github.com/davidreyg/tua-susalud/commit/e504fac4fd5cb649c565c8306a3d3863e082873f))
+
 ## [0.16.0] - 2026-05-25
 ### 🚀 Nuevas funcionalidades
 
