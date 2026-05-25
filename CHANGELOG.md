@@ -13,6 +13,12 @@
 ﻿
 ﻿
 ﻿
+﻿
+## [0.16.0] - 2026-05-25
+### 🚀 Nuevas funcionalidades
+
+- :boom: Implementa el servicio y las rutas para la gestión de leyendas en el API ([`0c3ed1b`](https://github.com/davidreyg/tua-susalud/commit/0c3ed1b9e74a101ca4d67c149e64108222cf62d7))
+
 ## [0.15.1] - 2026-05-19
 ### 🐛 Correcciones de errores
 
